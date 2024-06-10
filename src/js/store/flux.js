@@ -1,42 +1,75 @@
-const getState = ({ getStore, getActions, setStore }) => {
+const getState = ({ getStore, setStore, getActions }) => {
 	return {
 		store: {
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			]
+			contactList: [],
+			idDelete: "",
+			contactToEdit: {}
 		},
 		actions: {
-			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
+			getData: str => {
+				fetch("https://playground.4geeks.com/contact/agendas/gespana")
+					.then(res => res.json())
+					.then(data => setStore({ contactList: data.contacts }))
+					.catch(error => console.log(error));
 			},
-			loadSomeData: () => {
-				/**
-					fetch().then().then(data => setStore({ "foo": data.bar }))
-				*/
+			creaContact: user => {
+				try {
+					const respuesta = fetch("https://playground.4geeks.com/contact/agendas/gespana", {
+						method: "POST" // or 'POST'
+
+					})
+					if (respuesta.status == 400) {
+						const { detail } = respuesta.json()
+						if (detail == "User already exists.") {
+							console.log(detail);
+
+						}
+					}
+				} catch (error) {
+					console.log(error)
+				}
+				// .then(res => res.json())
+				// .then(response => console.log("Success:", response))
+				// .catch(error => console.error("Error:", error));
+				// console.log("ERROR dentro de creacontact", error);
 			},
-			changeColor: (index, color) => {
-				//get the store
+			addContact: user => {
+				fetch("https://playground.4geeks.com/contact/agendas/gespana/contacts", {
+					method: "POST", // or 'POST'
+					body: JSON.stringify(user), // data can be `string` or {object}!
+					headers: {
+						"Content-Type": "application/json"
+					}
+				})
+					.then(res => res.json())
+					.then(response => console.log("Success:", response))
+					.catch(error => console.error("Error:", error));
+			},
+			addidDelete: id => {
+				setStore({ idDelete: id });
+			},
+			removeContact: () => {
 				const store = getStore();
-
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
+				fetch("https://playground.4geeks.com/contact/agendas/gespana/contacts/" + store.idDelete, {
+					method: "DELETE"
+				}).then(res => {
+					if (res.ok) {
+						getActions().getData();
+					}
 				});
-
-				//reset the global store
-				setStore({ demo: demo });
+			},
+			editContact: (id, contact) => {
+				fetch("https://playground.4geeks.com/contact/agendas/gespana/contacts/" + id, {
+					method: "PUT",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(contact)
+				})
+					.then(res => res.json())
+					.then(results => console.log(setStore({ contact: results }), "estoy en setStore"))
+					.catch(error => console.log("Error", error));
+			},
+			getContact: contact => {
+				setStore({ contactToEdit: contact });
 			}
 		}
 	};
