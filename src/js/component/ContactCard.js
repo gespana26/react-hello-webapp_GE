@@ -5,10 +5,12 @@ import RigoPhoto from "../../img/rigo-baby.jpg";
 import { Context } from "../store/appContext";
 
 export const ContactCard = props => {
+
     const { store, actions } = useContext(Context);
     const [state, setState] = useState({
         //initialize state here
     });
+
 
     return (
         <li className="list-group-item">
@@ -23,7 +25,7 @@ export const ContactCard = props => {
 
                         <div className="">
                             <Link to={"/editar/" + props.contact.id}>
-                                <button className="btn" onClick={() => actions.getContact(props.contact)}>
+                                <button className="btn" >
                                     <i className="fas fa-pencil-alt mr-3" />
                                 </button>
                             </Link>

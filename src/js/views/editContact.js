@@ -1,15 +1,17 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
 import { Link, useParams } from "react-router-dom";
 
 export const EditContact = () => {
     const { store, actions } = useContext(Context);
     const [user, setUser] = useState({
-        "name": store.contactToEdit.name,
-        "email": store.contactToEdit.email,
-        "address": store.contactToEdit.address,
-        "phone": store.contactToEdit.phone
+        "name": "",
+        "email": "",
+        "address": "",
+        "phone": ""
     });
+    const params = useParams();
+    console.log("VALOR DE ID:  ", params.id)
 
     const handleChange = event => {
         setUser({ ...user, [event.target.name]: event.target.value });
@@ -18,8 +20,19 @@ export const EditContact = () => {
 
     const handleSubmit = event => {
         event.preventDefault();
-        actions.editContact(store.contactToEdit.id, user);
+        actions.editContact(params.id, user);
     };
+
+    const findContact = () => {
+        let contactToEdit = store.contactList.find((contact) => contact.id == params.id)
+        setUser(contactToEdit)
+        console.log("VALOR de contactToEdit:   ", contactToEdit)
+    }
+
+    useEffect(() => {
+        findContact();
+    }, [])
+
 
     return (
         <div className="container">
@@ -32,7 +45,7 @@ export const EditContact = () => {
                             type="text"
                             className="form-control"
                             placeholder="Full Name"
-                            name="full_name"
+                            name="name"
                             defaultValue={user.name}
                         />
                     </div>
@@ -52,7 +65,7 @@ export const EditContact = () => {
                             type="phone"
                             className="form-control"
                             placeholder="Enter phone"
-                            name="address"
+                            name="phone"
                             defaultValue={user.phone}
                         />
                     </div>
@@ -62,7 +75,7 @@ export const EditContact = () => {
                             type="text"
                             className="form-control"
                             placeholder="Enter address"
-                            name="phone"
+                            name="address"
                             defaultValue={user.address}
                         />
                     </div>

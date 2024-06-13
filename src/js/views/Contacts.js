@@ -17,9 +17,6 @@ export const Contacts = () => {
 	}, []);
 	console.log(store.contactList);
 
-	const prueba = actions.creaContact();
-
-
 	return (
 		<div className="container">
 			<div>

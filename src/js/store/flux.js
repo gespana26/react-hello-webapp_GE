@@ -15,7 +15,7 @@ const getState = ({ getStore, setStore, getActions }) => {
 			creaContact: user => {
 				try {
 					const respuesta = fetch("https://playground.4geeks.com/contact/agendas/gespana", {
-						method: "POST" // or 'POST'
+						method: "POST"
 
 					})
 					if (respuesta.status == 400) {
@@ -28,14 +28,11 @@ const getState = ({ getStore, setStore, getActions }) => {
 				} catch (error) {
 					console.log(error)
 				}
-				// .then(res => res.json())
-				// .then(response => console.log("Success:", response))
-				// .catch(error => console.error("Error:", error));
-				// console.log("ERROR dentro de creacontact", error);
+
 			},
 			addContact: user => {
 				fetch("https://playground.4geeks.com/contact/agendas/gespana/contacts", {
-					method: "POST", // or 'POST'
+					method: "POST",
 					body: JSON.stringify(user), // data can be `string` or {object}!
 					headers: {
 						"Content-Type": "application/json"
